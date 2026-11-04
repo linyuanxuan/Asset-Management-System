@@ -1,0 +1,17 @@
+{
+  "name": "digital-assets-ledger",
+  "version": "1.0.0",
+  "private": true,
+  "description": "个人数字资产台账管理系统（本地单机使用）",
+  "main": "server.js",
+  "scripts": {
+    "init": "node scripts/set-password.js",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

@@ -1,0 +1,24 @@
+# 依赖与运行时产物
+node_modules/
+npm-debug.log*
+
+# 敏感配置：绝对不要提交
+.env
+.env.local
+*.env
+
+# 数据库与备份：包含加密后的密钥，同样禁止外传
+data/
+*.db
+*.db-wal
+*.db-shm
+backup/
+*.csv
+
+# 系统 / 编辑器 / 工具
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.workbuddy/
+*.zip

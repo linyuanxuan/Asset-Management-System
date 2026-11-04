@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>个人数字资产台账管理系统 · 项目主页</title>
+<meta name="description" content="本地单机运行的数字资产台账：AI 资源、账号、云服务器、其他凭证统一管理，敏感字段 AES-256-GCM 加密存储。" />
+<meta name="theme-color" content="#0f172a" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%230f172a'/%3E%3Ctext x='50' y='68' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif'%3E资%3C/text%3E%3C/svg%3E" />
+<style>
+  :root{
+    --bg:#f6f7f9;
+    --panel:#ffffff;
+    --ink:#0f172a;
+    --ink-2:#475569;
+    --ink-3:#94a3b8;
+    --line:#e2e8f0;
+    --brand:#0f172a;
+    --accent:#4f46e5;
+    --ok:#059669;
+    --warn:#b45309;
+    --danger:#b91c1c;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(15,23,42,.05), 0 8px 24px -12px rgba(15,23,42,.12);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.65;-webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+  /* 顶栏 */
+  header{
+    position:sticky;top:0;z-index:20;
+    background:rgba(246,247,249,.82);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;gap:14px;height:60px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:.01em}
+  .logo i{
+    width:30px;height:30px;border-radius:9px;background:var(--brand);color:#fff;
+    display:grid;place-items:center;font-style:normal;font-size:14px;
+  }
+  .nav nav{margin-left:auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .nav nav a{
+    font-size:14px;color:var(--ink-2);padding:7px 11px;border-radius:9px;
+  }
+  .nav nav a:hover{background:#eceff3;color:var(--ink)}
+  .nav nav a.ghost{border:1px solid var(--line);background:#fff}
+
+  /* Hero */
+  .hero{padding:74px 0 54px;position:relative;overflow:hidden}
+  .hero::before{
+    content:"";position:absolute;inset:-40% -10% auto -10%;height:520px;
+    background:radial-gradient(60% 60% at 50% 0%, rgba(79,70,229,.13), transparent 70%);
+    pointer-events:none;
+  }
+  .tag{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:12.5px;color:var(--ink-2);background:#fff;border:1px solid var(--line);
+    padding:5px 12px;border-radius:999px;box-shadow:var(--shadow);
+  }
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(5,150,105,.14)}
+  h1{
+    font-size:clamp(30px,5vw,46px);line-height:1.18;letter-spacing:-.02em;
+    margin:20px 0 14px;font-weight:700;
+  }
+  .sub{font-size:16.5px;color:var(--ink-2);max-width:640px;margin:0 0 26px}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 18px;border-radius:10px;font-size:14.5px;font-weight:500;
+    border:1px solid transparent;transition:.16s ease;
+  }
+  .btn-primary{background:var(--brand);color:#fff}
+  .btn-primary:hover{background:#1e293b;transform:translateY(-1px)}
+  .btn-line{background:#fff;border-color:var(--line);color:var(--ink-2);box-shadow:var(--shadow)}
+  .btn-line:hover{color:var(--ink);border-color:#cbd5e1}
+  .hint{font-size:12.5px;color:var(--ink-3)}
+  .hint code{background:#eef1f5;padding:1px 5px;border-radius:4px;color:var(--ink-2)}
+
+  /* 通用区块 */
+  section{padding:44px 0}
+  .sec-title{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:0 0 8px}
+  h2{font-size:24px;letter-spacing:-.01em;margin:0 0 22px;font-weight:650}
+
+  .grid{display:grid;gap:14px}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  @media (max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr}}
+  @media (max-width:620px){.g4,.g2{grid-template-columns:1fr}}
+
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 18px 16px;box-shadow:var(--shadow);
+  }
+  .card h3{margin:0 0 6px;font-size:15.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+  .card p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.6}
+  .card .k{
+    font-size:11.5px;color:var(--ink-3);letter-spacing:.04em;
+    display:inline-block;margin-bottom:10px;
+  }
+  .accent{color:var(--accent)}
+  .ok{color:var(--ok)}
+
+  ul.list{margin:0;padding:0;list-style:none}
+  ul.list li{
+    position:relative;padding-left:22px;font-size:13.8px;color:var(--ink-2);margin-bottom:9px;
+  }
+  ul.list li::before{
+    content:"";position:absolute;left:4px;top:9px;width:7px;height:7px;border-radius:2px;
+    background:var(--accent);opacity:.75;transform:rotate(45deg);
+  }
+  ul.list strong{color:var(--ink);font-weight:600}
+
+  /* 代码块 */
+  .code{
+    background:#0f172a;border-radius:var(--radius);overflow:hidden;
+    box-shadow:0 18px 40px -24px rgba(15,23,42,.6);
+  }
+  .code-bar{
+    display:flex;align-items:center;gap:7px;padding:11px 14px;
+    border-bottom:1px solid rgba(255,255,255,.07);
+  }
+  .code-bar i{width:9px;height:9px;border-radius:50%;background:#475569;display:block}
+  .code-bar span{margin-left:6px;font-size:11.5px;color:#94a3b8;letter-spacing:.04em}
+  .code pre{
+    margin:0;padding:16px 18px 18px;color:#e2e8f0;font-size:13px;line-height:1.85;
+    overflow-x:auto;
+  }
+  .code .c{color:#64748b}
+  .code .p{color:#7dd3fc}
+
+  /* 表格 */
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;font-size:13.8px}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f8fafc;font-weight:600;font-size:12.5px;color:var(--ink-2);letter-spacing:.03em}
+  tr:last-child td{border-bottom:none}
+  td:first-child{color:var(--ink);white-space:nowrap;font-weight:500}
+  td:last-child{color:var(--ink-2)}
+
+  /* 目录树 */
+  .tree{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 18px;margin:0;font-size:13px;line-height:1.9;color:var(--ink-2);
+    overflow-x:auto;white-space:pre;
+  }
+  .tree b{color:var(--ink);font-weight:600}
+
+  footer{border-top:1px solid var(--line);padding:30px 0 44px;color:var(--ink-3);font-size:12.8px}
+  .foot{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+  .foot a{color:var(--ink-2);border-bottom:1px solid transparent}
+  .foot a:hover{border-color:var(--ink-3)}
+  .warn{
+    margin-top:16px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;
+    border-radius:12px;padding:12px 14px;font-size:13px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="./index.html"><i>资</i>数字资产台账</a>
+    <nav>
+      <a href="#features">功能</a>
+      <a href="#security">安全</a>
+      <a href="#start">快速开始</a>
+      <a class="ghost" href="https://github.com/linyuanxuan/Asset-Management-System" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <span class="tag"><span class="dot"></span>本地单机运行 · 不面向外网 · 单人自用</span>
+    <h1>把散落的 AI 额度、账号密码、<br />服务器与凭证收进一个加密台账</h1>
+    <p class="sub">
+      Node.js + Express + SQLite，单个 db 文件即可迁移备份。API Key、密码、SSH 私钥全部用
+      AES-256-GCM 加密入库，页面只显示掩码，需要时逐字段解密。
+    </p>
+    <div class="actions">
+      <a class="btn btn-primary" href="#start">快速开始</a>
+      <a class="btn btn-line" href="https://github.com/linyuanxuan/Asset-Management-System#readme" target="_blank" rel="noopener">阅读完整文档 ↗</a>
+      <a class="btn btn-line" href="http://127.0.0.1:3000" target="_blank" rel="noopener">打开本地应用</a>
+    </div>
+    <p class="hint">
+      「打开本地应用」需要先在本机执行 <code>npm run init -- 密码</code> 与 <code>npm start</code>，默认地址 <code>http://127.0.0.1:3000</code>。
+    </p>
+  </section>
+
+  <section id="features">
+    <p class="sec-title">Scope</p>
+    <h2>四类资产，一套台账</h2>
+    <div class="grid g4">
+      <div class="card">
+        <span class="k">AI RESOURCES</span>
+        <h3>AI 资源</h3>
+        <p>平台、接口地址、API Key、模型、总额度 / 已用 / 剩余、额度到期时间。剩余额度 ≤10% 自动标红。</p>
+      </div>
+      <div class="card">
+        <span class="k">ACCOUNTS</span>
+        <h3>账号资产</h3>
+        <p>平台、登录地址、账号、邮箱、密码、绑定手机、注册时间。密码加密存储，仅在需要时解密。</p>
+      </div>
+      <div class="card">
+        <span class="k">CLOUD &amp; SERVERS</span>
+        <h3>云 &amp; 服务器</h3>
+        <p>IDC / VPS / Cloudflare Pages / 域名 / DNS / 证书，含 IP、SSH 端口、登录账号、续费时间。</p>
+      </div>
+      <div class="card">
+        <span class="k">CREDENTIALS</span>
+        <h3>其他凭证</h3>
+        <p>订阅服务、会员、接口密钥。名称、关联账号、密钥、到期时间一屏可见。</p>
+      </div>
+    </div>
+
+    <div class="grid g3" style="margin-top:14px">
+      <div class="card">
+        <h3>分类筛选 &amp; 模糊搜索</h3>
+        <p>顶栏标签切换分类，搜索框同时匹配平台名称与备注，输入即筛。</p>
+      </div>
+      <div class="card">
+        <h3>到期提醒</h3>
+        <p>已过期标红「已过期 N 天」，≤30 天（可配）标橙「剩余 N 天」，续费不再漏。</p>
+      </div>
+      <div class="card">
+        <h3>CSV 导出备份</h3>
+        <p>支持脱敏导出与含明文密钥导出，带 UTF-8 BOM，Excel 打开中文不乱码。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="security">
+    <p class="sec-title">Security</p>
+    <h2>安全是这套系统的重点，不是附赠</h2>
+    <div class="grid g2">
+      <div class="card">
+        <ul class="list">
+          <li><strong>AES-256-GCM 加密</strong>：密码 / API Key / SSH 私钥 / 凭证密钥随机 IV + 认证标签，改密文必然解密失败。</li>
+          <li><strong>管理员密码加盐哈希</strong>：scrypt(N=16384, r=8, p=1) + 16 字节随机盐，只存哈希，恒定时间比对。</li>
+          <li><strong>全接口登录鉴权</strong>：未登录访问任何 <code>/api/*</code> 返回 401，不泄露一条资产。</li>
+        </ul>
+      </div>
+      <div class="card">
+        <ul class="list">
+          <li><strong>XSS 防护</strong>：前端只用 <code>textContent</code> 渲染，后端清洗控制字符，CSP 禁内联脚本。</li>
+          <li><strong>会话安全</strong>：HMAC 签名 HttpOnly + SameSite=Strict Cookie，空闲 120 分钟过期，重启即失效。</li>
+          <li><strong>日志脱敏</strong>：只记录方法、路径、状态码与耗时，绝不打印密钥与密码。</li>
+        </ul>
+      </div>
+    </div>
+
+    <table style="margin-top:14px">
+      <thead>
+        <tr><th>风险点</th><th>处理方式</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>明文存储敏感字段</td><td>入库前 AES-256-GCM 加密，库内形如 <code>enc:v1:&lt;base64&gt;</code>，列表接口只返回掩码</td></tr>
+        <tr><td>传输过程暴露</td><td>仅监听 127.0.0.1；明文走独立接口且响应 <code>no-store</code>；可反代 HTTPS 并开 <code>COOKIE_SECURE=1</code></td></tr>
+        <tr><td>暴力破解登录</td><td>同 IP 10 分钟内 5 次失败锁定 10 分钟</td></tr>
+        <tr><td>CSRF</td><td>SameSite=Strict + 写操作 Origin/Referer 同源校验</td></tr>
+        <tr><td>参数注入 / 超长</td><td>字段白名单 + 类型、长度、日期格式、枚举校验，未声明字段直接丢弃</td></tr>
+        <tr><td>配置文件外泄</td><td><code>.env</code>、<code>data/</code>、<code>*.db</code>、<code>*.csv</code> 全部在 <code>.gitignore</code> 中</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="start">
+    <p class="sec-title">Quick start</p>
+    <h2>三步跑起来</h2>
+    <div class="grid g2" style="align-items:start">
+      <div class="code">
+        <div class="code-bar"><i></i><i></i><i></i><span>terminal</span></div>
+<pre><span class="c"># 1. 安装依赖（仅 express）</span>
+npm install
+
+<span class="c"># 2. 生成 AES_KEY / SESSION_SECRET 并设管理员密码</span>
+npm run init <span class="p">--</span> 你的管理员密码
+
+<span class="c"># 3. 启动</span>
+npm start
+<span class="c"># → http://127.0.0.1:3000</span></pre>
+      </div>
+      <div class="card">
+        <h3>环境要求</h3>
+        <p style="margin-bottom:12px">Node.js ≥ 22.5（使用内置 <code>node:sqlite</code>，无需编译原生模块；低版本会自动回退 better-sqlite3）。</p>
+        <h3 style="margin-top:14px">备份</h3>
+        <p style="margin-bottom:12px">停服后复制 <code>data/assets.db</code> 即完成备份；换机时连同 <code>.env</code> 一起拷贝，<code>npm install &amp;&amp; npm start</code> 即可恢复。</p>
+        <h3 style="margin-top:14px">注意</h3>
+        <p><strong>AES_KEY 丢失 = 已加密数据永久无法解密</strong>，请与数据库分开另存。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="sec-title">Structure</p>
+    <h2>项目结构</h2>
+    <pre class="tree">
+<b>server.js</b>              入口：安全响应头、请求日志、路由挂载、启动自检
+<b>src/</b>
+  env.js                 极简 .env 加载器（不依赖 dotenv）
+  crypto.js              AES-256-GCM 加解密
+  auth.js                scrypt 密码哈希 + 签名 Cookie 会话
+  db.js                  SQLite 初始化与建表
+  schema.js              四类资产字段定义（前后端唯一来源）
+  validate.js            输入校验、清洗、字段白名单
+  routes/auth.js         登录 / 登出 / 会话状态（含失败限流）
+  routes/assets.js       CRUD + 搜索 + 单字段解密 + CSV 导出
+<b>public/</b>                  index.html · login.html · app.js · login.js · style.css
+<b>scripts/</b>set-password.js 生成密钥与密码哈希写入 .env
+<b>docs/</b>index.html         本介绍页（GitHub Pages）
+<b>data/</b>assets.db         单文件数据库（首次启动自动创建，不入库）
+    </pre>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <span>个人数字资产台账管理系统</span>
+      <a href="https://github.com/linyuanxuan/Asset-Management-System" target="_blank" rel="noopener">GitHub 仓库 ↗</a>
+      <a href="https://github.com/linyuanxuan/Asset-Management-System#readme" target="_blank" rel="noopener">README ↗</a>
+      <a href="http://127.0.0.1:3000" target="_blank" rel="noopener">本地应用 ↗</a>
+      <span style="margin-left:auto">Node.js · Express · SQLite · Tailwind CSS</span>
+    </div>
+    <div class="warn">
+      本页仅为仓库介绍，不含任何真实凭证。实际系统请在本机运行，切勿将 <code>.env</code>、<code>data/assets.db</code>、导出的 CSV 上传到网络。
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

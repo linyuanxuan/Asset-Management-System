@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>数字资产台账</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body class="min-h-screen bg-slate-100 text-slate-800">
+
+  <!-- 顶栏 -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3 flex-wrap">
+      <div class="flex items-center gap-2 mr-1">
+        <div class="w-8 h-8 rounded-lg bg-slate-900 text-white grid place-items-center text-sm font-semibold">资</div>
+        <h1 class="text-base font-semibold text-slate-900 whitespace-nowrap">数字资产台账</h1>
+      </div>
+
+      <div class="relative flex-1 min-w-[10rem] max-w-xs">
+        <input id="search" type="search" class="input pl-8" placeholder="搜索平台名称 / 备注…" maxlength="100" />
+        <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path>
+        </svg>
+      </div>
+
+      <button id="btn-add" class="btn btn-primary ml-auto">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>
+        新增资产
+      </button>
+
+      <details id="export-menu" class="relative">
+        <summary class="btn btn-ghost list-none cursor-pointer">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16"></path></svg>
+          导出 CSV
+        </summary>
+        <div class="absolute right-0 mt-1 w-60 bg-white border border-slate-200 rounded-lg shadow-lg p-1 z-40">
+          <button class="menu-item" data-export="0">
+            <span class="font-medium">脱敏导出</span>
+            <span class="block text-xs text-slate-500">密钥/密码列留空</span>
+          </button>
+          <button class="menu-item text-red-600" data-export="1">
+            <span class="font-medium">导出含明文密钥</span>
+            <span class="block text-xs text-red-500">备份用，请妥善保管</span>
+          </button>
+        </div>
+      </details>
+
+      <button id="btn-logout" class="btn btn-ghost" title="退出登录">退出</button>
+    </div>
+
+    <!-- 分类标签 -->
+    <nav id="tabs" class="max-w-6xl mx-auto px-4 pb-2 flex gap-1.5 overflow-x-auto"></nav>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-4">
+    <div id="summary" class="mb-3 text-sm text-slate-500 flex items-center gap-3 flex-wrap"></div>
+    <section id="list" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></section>
+    <div id="empty" class="hidden text-center py-20 text-slate-400">
+      <p class="text-sm">暂无记录</p>
+      <button id="btn-add-empty" class="btn btn-ghost mt-3">添加第一条资产</button>
+    </div>
+  </main>
+
+  <div id="modal-root"></div>
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden">
+    <div id="toast-body" class="px-4 py-2 rounded-lg bg-slate-900 text-white text-sm shadow-lg"></div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
