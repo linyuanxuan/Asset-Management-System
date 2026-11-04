@@ -1,11 +1,11 @@
 # 个人数字资产台账管理系统
 
-**[项目介绍页](https://linyuanxuan.github.io/Asset-Management-System/) · [本地应用](http://127.0.0.1:3000) · [快速开始](#四启动步骤) · [备份方法](#五备份与迁移) · [安全设计](#六安全设计说明)**
+**[在线介绍页](https://lyams.linyuanxuan.top/) · [本地应用](http://127.0.0.1:3000) · [快速开始](#四启动步骤) · [备份方法](#五备份与迁移) · [安全设计](#六安全设计说明)**
 
 本地单机运行的数字资产台账，管理 AI 资源、账号、云服务器、其他凭证四类资产，敏感字段 AES-256-GCM 加密入库。
 
 > 仓库：[github.com/linyuanxuan/Asset-Management-System](https://github.com/linyuanxuan/Asset-Management-System)
-> 介绍页源码在 [docs/index.html](docs/index.html)，开启 GitHub Pages 后的地址即上方「项目介绍页」。
+> 在线介绍页：[lyams.linyuanxuan.top](https://lyams.linyuanxuan.top/)（源码 `docs/index.html`）
 
 - 技术栈：Node.js + Express + SQLite（Node 22 内置 `node:sqlite`，无原生编译依赖）+ 原生 HTML/Tailwind CSS
 - 仅监听 `127.0.0.1`，不对外网提供服务；无注册、无多用户、无分享
@@ -138,19 +138,20 @@ cp data/assets.db  backup/assets-$(date +%Y%m%d).db
 
 ## 九、发布到 GitHub / GitHub Pages
 
-仓库根目录已备好介绍页 `docs/index.html`，README 顶部有指向它的链接。
+介绍页 `docs/index.html` 已部署到自有域名：**<https://lyams.linyuanxuan.top/>**（静态托管，Cloudflare 加速）。
 
-**1. 开启 Pages**
+**1. 静态页部署**
 
-仓库 `Settings → Pages → Source: Deploy from a branch → Branch: main / Folder: /docs → Save`。
-约 1 分钟后访问 `https://<用户名>.github.io/<仓库名>/`。
+`docs/` 目录整体作为站点根目录发布即可，页面为纯静态、无外部依赖，可直接放到任意静态托管（Nginx / Cloudflare Pages / GitHub Pages）。
 
-**2. 链接已配置好**
+备选方案（GitHub Pages）：`Settings → Pages → Source: Deploy from a branch → Branch: main，Folder: /docs`。
 
-README 与介绍页中的链接均指向 `linyuanxuan/Asset-Management-System`。若日后仓库改名，执行：
+**2. 链接位置**
+
+仓库链接指向 `linyuanxuan/Asset-Management-System`，介绍页链接指向 `https://lyams.linyuanxuan.top/`。若域名或仓库名变更，执行：
 
 ```bash
-grep -rl "Asset-Management-System" README.md docs/index.html
+grep -rn "lyams.linyuanxuan.top\|Asset-Management-System" README.md docs/index.html
 ```
 
 **3. 推送前自检（关键）**
